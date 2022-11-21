@@ -882,6 +882,9 @@ Void EfficientFieldIRAPMapping::initialize(const Bool isField, const Int gopSize
 }
 int CNNEnCount = 0; //added//
 int BlockCount = 0; //added//
+int Comp0Count = 0; //added//
+int Comp1Count = 0; //added//
+int Comp2Count = 0; //added//
 Int EfficientFieldIRAPMapping::adjustGOPid(const Int GOPid)
 {
   if(IRAPtoReorder)
@@ -2163,7 +2166,7 @@ Void TEncGOP::compressGOP( Int iPOCLast, Int iNumPicRcvd, TComList<TComPic*>& rc
                             printf(" 1");
                             //added// 
                             if(yBlock == iHeightInBlocks -1 and xBlock == iWidthInBlocks -1)          {
-                            printf("\n\nBlocchi presi da CNN: %d\n", localBlockCount);
+                            printf("\n\nBlocchi presi da CNN: %d\n", localBlockCount); 
                        	    } //end//
                         }
                         else 
@@ -2176,8 +2179,20 @@ Void TEncGOP::compressGOP( Int iPOCLast, Int iNumPicRcvd, TComList<TComPic*>& rc
                             localBlockCount ++;
                             BlockCount ++;
                             if(yBlock == iHeightInBlocks -1 and xBlock == iWidthInBlocks -1)          {
-                            printf("\n\nBlocchi presi da CNN: %d\n", localBlockCount);
-                            } //end//
+                            printf("\n\nBlocchi presi da CNN: %d\n", localBlockCount);	    }
+                            if(iCpnt==0)
+                            {
+                            Comp0Count++;
+                            }
+                            else if(iCpnt==1)
+                            {
+                            Comp1Count++;
+                            }
+                            else
+                            {
+                            Comp2Count++;
+                            }
+                             //end//
                         }
                     }
                     printf("\n");
@@ -2507,8 +2522,11 @@ Void TEncGOP::printOutSummary(UInt uiNumAllPicCoded, Bool isField, const Bool pr
   printf( "\n\nB Slices--------------------------------------------------------\n" );
   m_gcAnalyzeB.printOut('b', chFmt, printMSEBasedSNR, printSequenceMSE, bitDepths);
   //added//
-  printf( "\n\n CNN mode counter: %d\n", CNNEnCount);
-  printf( "\n %d blocchi presi da CNN \n\n", BlockCount);
+  printf( "\n\n CNN mode frames counter: %d\n", CNNEnCount);
+  printf( "\nBlocchi totali presi da CNN: %d \nDi cui:\n", BlockCount);
+  printf( "%d blocchi nella componente 0\n", Comp0Count);
+  printf( "%d blocchi nella componente 1\n", Comp1Count);
+  printf( "%d blocchi nella componente 2\n", Comp2Count);
   //end//
   if (!m_pcCfg->getSummaryOutFilename().empty())
   {
